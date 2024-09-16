@@ -33,6 +33,7 @@ public class TelegramFileService {
 
     @SneakyThrows
     public java.io.File getFile(String fileId) {
+        log.info("Getting the file from telegram, fileId={}", fileId);
         File file = telegramSender.execute(GetFile.builder()
                 .fileId(fileId)
                 .build());

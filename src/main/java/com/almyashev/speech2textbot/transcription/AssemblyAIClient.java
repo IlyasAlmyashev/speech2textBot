@@ -22,6 +22,7 @@ public final class AssemblyAIClient {
 
     @SneakyThrows
     public String createTranscription(File file) {
+        log.info("Asking AssemblyAI for transcription");
         AssemblyAI client = AssemblyAI.builder()
                 .apiKey(assemblyKey)
                 .build();

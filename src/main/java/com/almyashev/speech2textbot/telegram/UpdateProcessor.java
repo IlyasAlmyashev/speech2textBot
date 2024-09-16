@@ -18,10 +18,11 @@ public class UpdateProcessor {
 
     public BotApiMethod<?> handleUpdate(Update update) {
         var message = update.getMessage();
-        log.info("Start message processing: message={}", message);
+        log.trace("Message is received. message={}", message);
         var chatId = message.getChatId().toString();
 
         if (message.hasVoice()) {
+            log.info("Start message processing: message={}", message);
             telegramAsyncMessageSender.sendMessageAsync(
                     chatId,
                     () -> handleMessageAsync(message),
