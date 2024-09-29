@@ -16,8 +16,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 @Component
 public class TelegramBot extends TelegramWebhookBot {
+    public static final String ERROR_MESSAGE = "An error occurred, please try again later";
+
     @Value("${bot.url}")
     private String botUrl;
+    @Value("${bot.username}")
+    private String botUsername;
     private final UpdateProcessor updateProcessor;
 
     public TelegramBot(
@@ -65,13 +69,13 @@ public class TelegramBot extends TelegramWebhookBot {
     private void sendUserErrorMessage(Long userId) {
         sendApiMethod(SendMessage.builder()
                 .chatId(userId)
-                .text("Произошла ошибка, попробуйте позже")
+                .text(ERROR_MESSAGE)
                 .build());
     }
 
     @Override
     public String getBotUsername() {
-        return "s2tbot";
+        return botUsername;
     }
 
     @Override
