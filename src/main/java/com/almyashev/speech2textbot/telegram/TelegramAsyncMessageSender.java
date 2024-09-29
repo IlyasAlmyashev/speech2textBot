@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @Slf4j
 @Service
 public class TelegramAsyncMessageSender {
-
+    private static final String WAIT_MESSAGE = "Your request has been accepted for processing, please wait.";
     private final DefaultAbsSender defaultAbsSender;
     private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
@@ -34,7 +34,7 @@ public class TelegramAsyncMessageSender {
     ) {
         log.info("Send message async: chatId={}", chatId);
         var message = defaultAbsSender.execute(SendMessage.builder()
-                .text("Ваш запрос принят в обработку, ожидайте")
+                .text(WAIT_MESSAGE)
                 .chatId(chatId)
                 .build());
 
