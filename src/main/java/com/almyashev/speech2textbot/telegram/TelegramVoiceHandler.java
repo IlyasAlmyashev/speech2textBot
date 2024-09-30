@@ -21,7 +21,7 @@ public class TelegramVoiceHandler {
         var text = StringUtils.abbreviate(
                 String.format(TEMPLATE, message.getFrom().getUserName(),
                         transcribeVoiceToTextService.transcribe(
-                                telegramFileService.getFile(message.getVoice().getFileId())
+                                telegramFileService.getFileURL(message.getVoice().getFileId())
                         )),
                 MAX_WIDTH
         );

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 public final class AssemblyAIClient {
+    private static final int TIMEOUT = 180;
     private final String assemblyKey;
 
     public AssemblyAIClient(
@@ -41,7 +42,7 @@ public final class AssemblyAIClient {
                 .get(
                         transcriptId,
                         RequestOptions.builder()
-                                .timeout(180, TimeUnit.SECONDS)
+                                .timeout(TIMEOUT, TimeUnit.SECONDS)
                                 .build()
                 );
 
@@ -51,6 +52,7 @@ public final class AssemblyAIClient {
 
         return transcript.getText().get();
     }
+
     @SneakyThrows
     public String createTranscription(String fileURL) {
         log.info("Asking AssemblyAI for transcription");
@@ -69,7 +71,7 @@ public final class AssemblyAIClient {
                 .get(
                         transcriptId,
                         RequestOptions.builder()
-                                .timeout(180, TimeUnit.SECONDS)
+                                .timeout(TIMEOUT, TimeUnit.SECONDS)
                                 .build()
                 );
 
