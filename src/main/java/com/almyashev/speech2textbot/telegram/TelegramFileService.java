@@ -31,13 +31,17 @@ public class TelegramFileService {
         this.botToken = botToken;
     }
 
-    @SneakyThrows
     public java.io.File getFile(String fileId) {
         log.info("Getting the file from telegram, fileId={}", fileId);
+        return getFileFromUrl(getFileURL(fileId));
+    }
+
+    @SneakyThrows
+    public String getFileURL(String fileId) {
         File file = telegramSender.execute(GetFile.builder()
                 .fileId(fileId)
                 .build());
-        return getFileFromUrl(file.getFileUrl(botToken));
+        return file.getFileUrl(botToken);
     }
 
     @SneakyThrows

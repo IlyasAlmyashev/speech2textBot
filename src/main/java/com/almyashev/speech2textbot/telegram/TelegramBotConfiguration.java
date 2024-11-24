@@ -19,10 +19,12 @@ public class TelegramBotConfiguration {
             TelegramBot telegramBot
     ) {
         var telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(telegramBot,
+        telegramBotsApi.registerBot(
+                telegramBot,
                 SetWebhook.builder()
                         .url(botUrl)
-                        .build());
+                        .build()
+        );
         return telegramBotsApi;
     }
 }

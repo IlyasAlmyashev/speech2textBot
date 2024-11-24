@@ -9,6 +9,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import static com.almyashev.speech2textbot.telegram.TelegramBot.ERROR_MESSAGE;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -43,8 +45,7 @@ public class UpdateProcessor {
         log.error("Произошла ошибка, chatId={}", chatId, throwable);
         return SendMessage.builder()
                 .chatId(chatId)
-                .text("Произошла ошибка, попробуйте позже")
+                .text(ERROR_MESSAGE)
                 .build();
     }
-
 }

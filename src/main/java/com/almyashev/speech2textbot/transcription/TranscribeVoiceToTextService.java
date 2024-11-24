@@ -13,4 +13,8 @@ public class TranscribeVoiceToTextService {
     public String transcribe(File audioFile) {
         return client.createTranscription(audioFile);
     }
+
+    public String transcribe(String audioFileURL) {
+        return client.createTranscription(audioFileURL);
+    }
 }
