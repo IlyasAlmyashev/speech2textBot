@@ -13,10 +13,11 @@ import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import static com.almyashev.speech2textbot.Const.ERROR_MESSAGE;
+
 @Slf4j
 @Component
 public class TelegramBot extends TelegramWebhookBot {
-    public static final String ERROR_MESSAGE = "An error occurred, please try again later";
 
     @Value("${bot.url}")
     private String botUrl;
