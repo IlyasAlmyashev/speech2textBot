@@ -1,0 +1,39 @@
+substitutions:
+  _DEPLOY_REGION: europe-west4
+  _SERVICE_NAME: testbot
+  _PROJECT_NUMBER: '1090451258609'
+  _BOT_USERNAME: almyashev_test_bot
+  _BOT_TOKEN: TEST_BOT_TOKEN
+  _TIMEZONE: Asia/Almaty
+
+steps:
+  # Шаг 1: Сборка Docker-образа
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA'
+      - '.'
+
+  # Шаг 2: Публикация образа в Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA'
+
+  # Шаг 3: Деплой в Google Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '$_SERVICE_NAME'
+      - '--image=gcr.io/$PROJECT_ID/$_SERVICE_NAME:$SHORT_SHA'
+      - '--region=$_DEPLOY_REGION'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--set-env-vars=TZ=$_TIMEZONE,BOT_URL=https://$_SERVICE_NAME-$_PROJECT_NUMBER.$_DEPLOY_REGION.run.app,BOT_USERNAME=$_BOT_USERNAME,USE_OPENAI=false'
+      - '--set-secrets=BOT_TOKEN=$_BOT_TOKEN:latest,ASSEMBLY_KEY=ASSEMBLY_KEY:latest,OPENAI_TOKEN=OPENAI_TOKEN:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

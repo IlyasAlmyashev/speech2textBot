@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.almyashev</groupId>
     <artifactId>speech2textBot</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <name>speech2textBot</name>
     <description>speech2text telegram bot</description>
     <url/>
@@ -41,6 +41,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

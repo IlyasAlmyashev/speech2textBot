@@ -9,9 +9,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.almyashev.speech2textbot.common.AsyncOperationService;
+
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -19,11 +18,16 @@ import java.util.function.Supplier;
 @Service
 public class TelegramAsyncMessageSender {
     private static final String WAIT_MESSAGE = "Your request has been accepted for processing, please wait.";
-    private final DefaultAbsSender defaultAbsSender;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 
-    public TelegramAsyncMessageSender(@Lazy DefaultAbsSender defaultAbsSender) {
+    private final DefaultAbsSender defaultAbsSender;
+    private final AsyncOperationService asyncOperationService;
+
+    public TelegramAsyncMessageSender(
+            @Lazy DefaultAbsSender defaultAbsSender,
+            AsyncOperationService asyncOperationService
+    ) {
         this.defaultAbsSender = defaultAbsSender;
+        this.asyncOperationService = asyncOperationService;
     }
 
     @SneakyThrows
@@ -38,20 +42,22 @@ public class TelegramAsyncMessageSender {
                 .chatId(chatId)
                 .build());
 
-        CompletableFuture.supplyAsync(action, executorService)
+        asyncOperationService.executeAsync(action, "Telegram-Message")
                 .exceptionally(onErrorHandler)
-                .thenAccept(sendMessage -> {
-                    try {
-                        log.info("Send edit message async: chatId={}", chatId);
-                        defaultAbsSender.execute(EditMessageText.builder()
-                                .chatId(chatId)
-                                .messageId(message.getMessageId())
-                                .text(sendMessage.getText())
-                                .build());
-                    } catch (TelegramApiException e) {
-                        log.error("Error while send request to telegram", e);
-                        throw new RuntimeException(e);
-                    }
-                });
+                .thenAccept(sendMessage -> updateMessage(chatId, message.getMessageId(), sendMessage));
+    }
+
+    private void updateMessage(String chatId, Integer messageId, SendMessage sendMessage) {
+        try {
+            log.info("Send edit message async: chatId={}", chatId);
+            defaultAbsSender.execute(EditMessageText.builder()
+                    .chatId(chatId)
+                    .messageId(messageId)
+                    .text(sendMessage.getText())
+                    .build());
+        } catch (TelegramApiException e) {
+            log.error("Error while send request to telegram", e);
+            throw new RuntimeException(e);
+        }
     }
 }
