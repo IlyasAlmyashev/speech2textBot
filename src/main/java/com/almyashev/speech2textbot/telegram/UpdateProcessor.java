@@ -17,19 +17,30 @@ import static com.almyashev.speech2textbot.Const.ERROR_MESSAGE;
 public class UpdateProcessor {
     private final TelegramAsyncMessageSender telegramAsyncMessageSender;
     private final TelegramVoiceHandler telegramVoiceHandler;
+    private final LinkPreviewService linkPreviewService;
 
     public BotApiMethod<?> handleUpdate(Update update) {
         var message = update.getMessage();
         log.trace("Message is received. message={}", message);
         var chatId = message.getChatId().toString();
 
+        if (message.hasText()) {
+            linkPreviewService.createPreviewMessage(message.getText())
+                    .ifPresent(previewMessage -> telegramAsyncMessageSender.sendMessageAsync(
+                            chatId,
+                            () -> SendMessage.builder()
+                                    .chatId(chatId)
+                                    .text(previewMessage)
+                                    .build(),
+                            throwable -> getErrorMessage(throwable, chatId)));
+        }
+
         if (message.hasVoice()) {
             log.info("Start message processing: message={}", message);
             telegramAsyncMessageSender.sendMessageAsync(
                     chatId,
                     () -> handleMessageAsync(message),
-                    (throwable) -> getErrorMessage(throwable, chatId)
-            );
+                    (throwable) -> getErrorMessage(throwable, chatId));
         }
 
         return null;
