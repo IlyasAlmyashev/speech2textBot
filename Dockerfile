@@ -1,11 +1,11 @@
-FROM maven:3.9-amazoncorretto-21 as build
+FROM maven:3.9-amazoncorretto-25 as build
 
 COPY pom.xml .
 COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:25-jre
 
 COPY --from=build /target/*.jar app.jar
 
