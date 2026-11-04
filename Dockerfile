@@ -1,13 +1,15 @@
-FROM maven:3.9-amazoncorretto-25 as build
+FROM golang:1.25-alpine AS build
 
-COPY pom.xml .
-COPY src ./src
+WORKDIR /src
+COPY go.mod ./
+COPY *.go ./
 
-RUN mvn clean package -DskipTests
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /s2tbot .
 
-FROM eclipse-temurin:25-jre
+# distroless/static ships the CA certificates needed for outgoing HTTPS.
+FROM gcr.io/distroless/static-debian12:nonroot
 
-COPY --from=build /target/*.jar app.jar
+COPY --from=build /s2tbot /s2tbot
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["/s2tbot"]

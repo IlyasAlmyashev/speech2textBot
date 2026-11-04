@@ -2,9 +2,8 @@ substitutions:
   _DEPLOY_REGION: europe-west4
   _SERVICE_NAME: testbot
   _PROJECT_NUMBER: '1090451258609'
-  _BOT_USERNAME: almyashev_test_bot
   _BOT_TOKEN: TEST_BOT_TOKEN
-  _TIMEZONE: Asia/Almaty
+  _WEBHOOK_SECRET: TEST_BOT_WEBHOOK_SECRET
 
 steps:
   # Шаг 1: Сборка Docker-образа
@@ -32,8 +31,8 @@ steps:
       - '--region=$_DEPLOY_REGION'
       - '--platform=managed'
       - '--allow-unauthenticated'
-      - '--set-env-vars=TZ=$_TIMEZONE,BOT_URL=https://$_SERVICE_NAME-$_PROJECT_NUMBER.$_DEPLOY_REGION.run.app,BOT_USERNAME=$_BOT_USERNAME,USE_OPENAI=false'
-      - '--set-secrets=BOT_TOKEN=$_BOT_TOKEN:latest,ASSEMBLY_KEY=ASSEMBLY_KEY:latest,OPENAI_TOKEN=OPENAI_TOKEN:latest'
+      - '--set-env-vars=BOT_URL=https://$_SERVICE_NAME-$_PROJECT_NUMBER.$_DEPLOY_REGION.run.app'
+      - '--set-secrets=BOT_TOKEN=$_BOT_TOKEN:latest,ASSEMBLY_KEY=ASSEMBLY_KEY:latest,WEBHOOK_SECRET=$_WEBHOOK_SECRET:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
