@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.almyashev</groupId>
     <artifactId>speech2textBot</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>speech2textBot</name>
     <description>speech2text telegram bot</description>
     <url />
